@@ -51,17 +51,24 @@ Open your browser to `http://localhost:8080`
 
 ```
 perspecta/
+├── assets/
+│   └── models/          # 3D models (GLTF/GLB format)
 ├── src/
 │   └── main.rs          # Main application entry point
 ├── wasm/
 │   └── index.html       # HTML wrapper for WASM build
 ├── Cargo.toml           # Project dependencies
-└── build_wasm.sh        # WASM build script
+├── build_wasm.sh        # WASM build script
+└── ATTRIBUTION.md       # Credits for 3D models and assets
 ```
 
 ## Development
 
-This project uses Bevy 0.15, a data-driven game engine built in Rust. The current version includes a simple 3D scene with a spinning quad as a starting point.
+This project uses Bevy 0.15, a data-driven game engine built in Rust. The current version includes a 3D scene with a spinning human character model (CesiumMan from the Khronos Group glTF Sample Assets) as a starting point for perspective drawing exercises.
+
+## Attribution
+
+See [ATTRIBUTION.md](ATTRIBUTION.md) for credits and licenses of 3D models and assets used in this project.
 
 ## License
 

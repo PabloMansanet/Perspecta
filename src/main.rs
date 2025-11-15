@@ -11,34 +11,27 @@ fn main() {
             ..default()
         }))
         .add_systems(Startup, setup)
-        .add_systems(Update, rotate_quad)
+        .add_systems(Update, rotate_model)
         .run();
 }
 
-/// Marker component for the spinning quad
+/// Marker component for the spinning model
 #[derive(Component)]
-struct SpinningQuad;
+struct SpinningModel;
 
-/// Setup the 3D scene with a spinning quad
+/// Setup the 3D scene with a human model
 fn setup(
     mut commands: Commands,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<StandardMaterial>>,
+    asset_server: Res<AssetServer>,
 ) {
-    // Spawn a quad (plane) that will spin
+    // Load and spawn the human model
     commands.spawn((
-        Mesh3d(meshes.add(Plane3d::default().mesh().size(2.0, 2.0))),
-        MeshMaterial3d(materials.add(StandardMaterial {
-            base_color: Color::srgb(0.3, 0.5, 0.8),
-            metallic: 0.5,
-            perceptual_roughness: 0.5,
-            ..default()
-        })),
+        SceneRoot(asset_server.load("models/cesium_man.glb#Scene0")),
         Transform::from_xyz(0.0, 0.0, 0.0),
-        SpinningQuad,
+        SpinningModel,
     ));
 
-    // Add a light source
+    // Add a key light (main light source)
     commands.spawn((
         PointLight {
             intensity: 2000.0,
@@ -48,22 +41,30 @@ fn setup(
         Transform::from_xyz(4.0, 8.0, 4.0),
     ));
 
-    // Add a camera looking at the quad
+    // Add a fill light (softer, from the other side)
+    commands.spawn((
+        PointLight {
+            intensity: 1000.0,
+            shadows_enabled: false,
+            ..default()
+        },
+        Transform::from_xyz(-4.0, 5.0, 3.0),
+    ));
+
+    // Add a camera positioned to view the human model
     commands.spawn((
         Camera3d::default(),
-        Transform::from_xyz(0.0, 2.5, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
+        Transform::from_xyz(0.0, 1.5, 4.0).looking_at(Vec3::new(0.0, 1.0, 0.0), Vec3::Y),
     ));
 }
 
-/// Rotate the quad continuously
-fn rotate_quad(
+/// Rotate the model continuously
+fn rotate_model(
     time: Res<Time>,
-    mut query: Query<&mut Transform, With<SpinningQuad>>,
+    mut query: Query<&mut Transform, With<SpinningModel>>,
 ) {
     for mut transform in &mut query {
-        // Rotate around the Y axis
-        transform.rotate_y(time.delta_secs() * 1.5);
-        // Also rotate a bit around the X axis for a more interesting spin
-        transform.rotate_x(time.delta_secs() * 0.5);
+        // Rotate around the Y axis for a slow turnaround
+        transform.rotate_y(time.delta_secs() * 0.8);
     }
 }
