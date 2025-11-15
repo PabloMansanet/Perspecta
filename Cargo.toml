@@ -18,6 +18,7 @@ bevy = { version = "0.15", default-features = false, features = [
     "bevy_sprite",
     "bevy_text",
     "bevy_ui",
+    "default_font",
     "png",
     "jpeg",
     "hdr",

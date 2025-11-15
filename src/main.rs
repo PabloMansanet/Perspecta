@@ -11,7 +11,6 @@ fn main() {
             ..default()
         }))
         .init_state::<AppState>()
-        .add_systems(Startup, setup_camera)
         // Main Menu systems
         .add_systems(OnEnter(AppState::MainMenu), setup_main_menu)
         .add_systems(OnExit(AppState::MainMenu), cleanup_menu)
@@ -61,13 +60,11 @@ enum MenuButton {
 #[derive(Component)]
 struct BackButton;
 
-/// Setup the camera once at startup
-fn setup_camera(mut commands: Commands) {
-    commands.spawn(Camera2d);
-}
-
 /// Setup the main menu UI
 fn setup_main_menu(mut commands: Commands) {
+    // Spawn 2D camera for UI
+    commands.spawn((Camera2d, StateCleanup));
+
     commands
         .spawn((
             Node {
@@ -84,31 +81,39 @@ fn setup_main_menu(mut commands: Commands) {
         .with_children(|parent| {
             // Title
             parent.spawn((
-                Text::new("Perspecta"),
-                TextFont {
-                    font_size: 60.0,
-                    ..default()
-                },
-                TextColor(Color::WHITE),
                 Node {
                     margin: UiRect::bottom(Val::Px(50.0)),
                     ..default()
                 },
-            ));
+            ))
+            .with_children(|parent| {
+                parent.spawn((
+                    Text::new("Perspecta"),
+                    TextFont {
+                        font_size: 60.0,
+                        ..default()
+                    },
+                    TextColor(Color::WHITE),
+                ));
+            });
 
             // Subtitle
             parent.spawn((
-                Text::new("Learning to Draw"),
-                TextFont {
-                    font_size: 24.0,
-                    ..default()
-                },
-                TextColor(Color::srgb(0.7, 0.7, 0.7)),
                 Node {
                     margin: UiRect::bottom(Val::Px(80.0)),
                     ..default()
                 },
-            ));
+            ))
+            .with_children(|parent| {
+                parent.spawn((
+                    Text::new("Learning to Draw"),
+                    TextFont {
+                        font_size: 24.0,
+                        ..default()
+                    },
+                    TextColor(Color::srgb(0.7, 0.7, 0.7)),
+                ));
+            });
 
             // 3D Model Pose button
             spawn_menu_button(parent, "3D Model Pose", MenuButton::ModelPose);
@@ -312,6 +317,9 @@ fn cleanup_model_pose(mut commands: Commands, query: Query<Entity, With<StateCle
 
 /// Setup the memory game scene
 fn setup_memory_game(mut commands: Commands) {
+    // Spawn 2D camera for UI
+    commands.spawn((Camera2d, StateCleanup));
+
     spawn_back_button(&mut commands);
 
     // Placeholder text
@@ -353,6 +361,9 @@ fn cleanup_memory_game(mut commands: Commands, query: Query<Entity, With<StateCl
 
 /// Setup the rotation game scene
 fn setup_rotation_game(mut commands: Commands) {
+    // Spawn 2D camera for UI
+    commands.spawn((Camera2d, StateCleanup));
+
     spawn_back_button(&mut commands);
 
     // Placeholder text
