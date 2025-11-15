@@ -1,0 +1,3 @@
+# Optional: uncomment to use wasm-server-runner for development
+# [target.wasm32-unknown-unknown]
+# runner = "wasm-server-runner"

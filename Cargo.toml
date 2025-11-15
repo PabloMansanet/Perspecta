@@ -1,0 +1,46 @@
+[package]
+name = "perspecta"
+version = "0.1.0"
+edition = "2021"
+authors = ["Pablo Mansanet"]
+description = "A Bevy-based tool to help artists learn to draw with perspective exercises"
+
+[dependencies]
+bevy = { version = "0.15", default-features = false, features = [
+    "bevy_asset",
+    "bevy_state",
+    "bevy_scene",
+    "bevy_winit",
+    "bevy_core_pipeline",
+    "bevy_pbr",
+    "bevy_gltf",
+    "bevy_render",
+    "bevy_sprite",
+    "bevy_text",
+    "bevy_ui",
+    "png",
+    "hdr",
+    "x11",
+    "tonemapping_luts",
+    "webgl2",
+] }
+
+[profile.dev]
+opt-level = 1
+
+[profile.dev.package."*"]
+opt-level = 3
+
+[profile.release]
+lto = "thin"
+
+# Enable a small amount of optimization in debug mode for better performance
+[profile.dev.package.bevy]
+opt-level = 3
+
+# WASM optimization
+[profile.wasm-release]
+inherits = "release"
+opt-level = "z"
+lto = "fat"
+codegen-units = 1
