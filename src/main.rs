@@ -255,15 +255,18 @@ fn cleanup_menu(mut commands: Commands, query: Query<Entity, With<StateCleanup>>
 
 /// Setup the 3D model pose scene
 fn setup_model_pose(mut commands: Commands, asset_server: Res<AssetServer>) {
-    // Add back button
-    spawn_back_button(&mut commands);
+    // Spawn 2D camera for UI overlay (back button)
+    commands.spawn((Camera2d, StateCleanup));
 
-    // Remove 2D camera and add 3D camera
+    // Spawn 3D camera for the model
     commands.spawn((
         Camera3d::default(),
         Transform::from_xyz(0.0, 1.5, 4.0).looking_at(Vec3::new(0.0, 1.0, 0.0), Vec3::Y),
         StateCleanup,
     ));
+
+    // Add back button
+    spawn_back_button(&mut commands);
 
     // Load and spawn the human model
     commands.spawn((
